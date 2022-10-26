@@ -1,0 +1,74 @@
+# ALL RELATIVE PATHS ARE RELATIVE TO rrf/rrf/scripts directory
+
+# Nested CV setup parameters
+nested_cv_setup:
+    randomized_outer_start_split: 0
+    randomized_outer_end_split: 100
+    test_frac: 0.25
+    hp_selection_n_splits: 5
+    oversample: False
+    f_beta: 3
+    min_npv_threshold: 0.999
+    grid_search_setup:
+        refit: 'Not Pass Precision (Min NPV), -5'
+        verbose: 4
+        n_jobs: -1
+        error_score: 'raise'
+    models_save_dirpath: 'relative-directory-path-to-save-models'
+    results_save_dirpath: 'relative-directory-path-to-save-results'
+
+# Model - XGBDictClassifier
+classifier:
+    name: XGBDictClassifier
+    initial_params:
+        n_estimators: 100
+        objective: "binary:logistic"
+        max_depth: 5
+        random_state: 123
+        fail_threshold: 0.5
+        max_delta_step: 0
+    search_space:
+        fail_threshold:
+            range:
+                min_inclusive: 0.00005
+                max_inclusive: 0.00155
+                n_values: 16
+
+# Parameters for standardizing time series feature lengths
+ts_standardization:
+    keep_start: True
+    standard_run_length_quantile: 0.5
+    resample_freq_minutes: 6
+
+# Data thaw parameters
+data_thaw:
+    pandas_metadata_dir:  # can enter a relative path, relative to rrf/rrf/scripts, to save pandas metadata
+
+# Labels and features
+label_specification:
+    fpath: 'relative-path/labels.csv'  # CSV file that holds the labels for each observation in a column
+    feature: labels  # column name for the labels
+
+feature_specification:
+    threshold_features:
+        fpath: 'relative-path/threshold_features.parquet'
+        # parquet file holding some features
+        # the distinction between threshold_features and static_features is not relevant for the pure XGB model.
+        # Required: an identifier column called run_id
+        # Other columns named as listed in `features` below
+        # One row per observation
+        features:
+            - name_of_threshold_feature_1
+            - name_of_threshold_feature_2
+            - name_of_threshold_feature_3
+    static_features:
+        fpath: 'relative-path/static_features.parquet'
+        # parquet file holding some features
+        # the distinction between threshold_features and static_features is not relevant for the pure XGB model.
+        # Required: an identifier column called run_id
+        # Other columns named as listed in `features` below
+        # One row per observation
+        features:
+            - name_of_static_feature_1
+            - name_of_static_feature_2
+            - name_of_static_feature_3
